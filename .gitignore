@@ -1,0 +1,16 @@
+*.pcap
+*.pcapng
+*.pcap*
+*.key
+*.pem
+*.p12
+*.pfx
+.env
+.env.*
+!*.example
+*.tar.gz
+*.bak
+*backup*.xml
+*.log
+.DS_Store
+__pycache__/
