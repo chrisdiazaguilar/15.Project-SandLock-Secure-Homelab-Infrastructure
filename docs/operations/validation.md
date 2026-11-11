@@ -9,6 +9,7 @@
 - Command Pi baseline backup SHA-256 verification passed October 7.
 
 ## Post-rack checklist
+- [ ] Verify OPNsense WAN cutover, including client DNS, internet egress and network isolation.
 - [ ] Verify physical links, Cisco trunk and access VLANs.
 - [ ] Verify management VLAN 99 and permanent USB NIC reachability.
 - [ ] Verify DHCP, DNS, isolation and internet egress for each VLAN.
