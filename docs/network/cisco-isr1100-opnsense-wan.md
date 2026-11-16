@@ -40,3 +40,11 @@ Household ISP router (gateway `192.168.1.1/24`) → Cisco C1111-4P (`SL-RTR-01`)
 ## Next checkpoint
 
 In OPNsense: review **System → Gateways → Configuration**; confirm or configure gateway `10.255.255.1` for `igb1`, and verify whether WAN form changes were applied. Next, physically connect Cisco `Gi0/0/1` to OPNsense `igb1`, check link status and test controlled routing. Preserve functioning VLAN 99 management access.
+
+## November 15 follow-up: physical transit troubleshooting
+
+- Confirmed OPNsense route table installed default via `10.255.255.1` on WAN `igb1`; gateway widget marked active with monitoring disabled (not itself a connectivity test).
+- Confirmed OPNsense LAN `igb0` is `192.168.1.1/24`, overlapping household router `192.168.1.1/24`. **Conflict unresolved**; avoid changing LAN without reviewing DHCP and management access.
+- Initial OPNsense ping from `10.255.255.2` to `10.255.255.1` failed with a network-down error; user identified and replaced faulty Ethernet cable on Cisco `Gi0/0/1` ↔ OPNsense `igb1`.
+- **After cable replacement, OPNsense diagnostics successfully pinged Cisco `10.255.255.1` from `10.255.255.2`: 1 sent / 1 received / 0% loss.** Direct transit connectivity now verified.
+- Pending: test OPNsense to household gateway and public IPv4; resolve LAN overlap; audit Cisco stateless upstream ACL, routing/NAT and isolation before general access; validate multiple packets and end-to-end clients.
