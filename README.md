@@ -14,12 +14,15 @@ Secure, segmented Proxmox homelab and defensive security monitoring platform.
 
 ## Documentation
 - [Topology](docs/architecture/topology.md) · [Hardware](docs/architecture/inventory.md)
-- [VLANs](docs/network/vlans-and-addressing.md) · [OPNsense](docs/network/opnsense.md) · [Cisco](docs/network/cisco-2960x.md)
+- [VLANs](docs/network/vlans-and-addressing.md) · [OPNsense](docs/network/opnsense.md) · [Cisco switch](docs/network/cisco-2960x.md) · [ISR1100 upstream integration](docs/network/cisco-isr1100-opnsense-wan.md)
 - [Seneca LAN TAP](docs/devices/seneca-lan-tap.md) · [PineTapPi](docs/devices/pinetappi.md) · [Command Pi](docs/devices/command-pi.md) · [Proxmox](docs/devices/proxmox.md)
 - [Rack & cabling](docs/operations/rack-and-cabling.md) · [Validation](docs/operations/validation.md)
 - [Milestones](docs/roadmap/milestones.md) · [Next steps](docs/roadmap/next-steps.md) · [Security](SECURITY.md)
 
 ## Status
+
+**November 2026 WAN update:** Cisco ISR1100 has a verified DHCP upstream connection to the household router; OPNsense WAN is confirmed as `igb1`, with static transit address entered but not yet verified applied. See [integration checkpoint](docs/network/cisco-isr1100-opnsense-wan.md). Full NAT, gateway, firewall and end-to-end connectivity remain pending.
+
 VLAN/firewall baseline validated during September; Seneca software and Suricata baseline established; PineTapPi rolling capture functional October 4; Command Pi pre-staged October 7. Final rack integration, complete management migration, Proxmox integration and end-to-end retesting remain.
 
 **Publishing warning:** repository is public. Even private-range addresses and hardware inventories disclose architecture. Review before sharing further. No license for reuse has been granted.
