@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-15 — Cisco startup save and pause
+- Verified Cisco DHCP WAN, routed upstream internet ping (5/5), transit link to OPNsense and restored stateless inbound ACL.
+- Saved Cisco configuration to startup-config (`[OK]`); Cisco NAT absent, OPNsense outbound NAT unverified.
+- Documented LAN subnet overlap and pending isolation, NAT, and end-to-end verification.
+- **Revised shutdown plan:** equipment stays powered on; user disconnected a WAN cable for pause (exact endpoint to confirm at resumption).
+- Updated [Cisco/OPNsense checkpoint](docs/network/cisco-isr1100-opnsense-wan.md).
+
 ## 2026-11-15
 - Documented verified Cisco ISR1100 `Gi0/0/0` DHCP connection, default route, ACL limitations, and gateway ping success.
 - Verified OPNsense live interface assignments (`WAN=igb1`, `LAN=igb0`) and VLAN 99 Dell management connectivity.
