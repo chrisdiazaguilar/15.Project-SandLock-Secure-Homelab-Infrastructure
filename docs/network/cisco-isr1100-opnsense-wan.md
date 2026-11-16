@@ -1,6 +1,6 @@
 # Cisco ISR 1100 upstream and OPNsense WAN integration
 
-> Status as observed November 12–15, 2026. This is an in-progress lab configuration, **not** validated end-to-end connectivity. Private IPs are documented for project reproducibility; this repository is public.
+> Status updated through November 16, 2026. This is an in-progress lab configuration: **router and firewall ICMP egress verified, but downstream clients, DNS/TCP, and isolation not validated end to end.** Private IPs are documented for project reproducibility; this repository is public.
 
 ## Intended path
 
@@ -59,3 +59,22 @@ Resume by confirming which WAN cable was unplugged, verifying physical links and
 - **Revised pause state (user confirmed): leave devices powered on; user unplugged a WAN network cable.** Cable endpoint not independently specified; verify exactly which link is disconnected before resuming. Do not record a power-off. Internet connectivity through disconnected link is not expected during the pause. No end-to-end SandLock client internet validation has been completed.
 
 **Next session:** Identify/reconnect WAN cable intentionally; inspect interface/link state, DHCP lease, default gateway, ACL and management access. Review OPNsense outbound NAT, design Cisco NAT and safe return filtering, resolve LAN overlap and enforce household isolation before enabling general traffic. Never publish credentials, private keys or raw device configuration exports.
+
+## November 16, 2026 — Session checkpoint (paused before OPNsense backup)
+
+**Verified from console and OPNsense screenshots:**
+
+- Reconnected household-router LAN → Cisco `Gi0/0/0`. Cisco DHCP lease `192.168.1.244/24`, interface up/up, default route `0.0.0.0/0` via `192.168.1.1`; Cisco `Gi0/0/1` `10.255.255.1/30` up/up.
+- `SANDLOCK-WAN-IN` extended ACL persisted across the previous pause: DHCP reply and selected ICMP permits, then `deny ip any any log` (more than 200 deny matches). It is **stateless and blocks ordinary TCP/UDP return traffic, including observed DNS replies**; general client internet use is not validated.
+- OPNsense MANAGEMENT GUI `192.168.99.1` restored from Dell by recreating temporary tagged `eno2.99` with `192.168.99.10/24`; not a persistent host interface configuration.
+- OPNsense Source NAT mode **Automatic Source NAT rule generation** (no manually listed rules). Cisco `Gi0/0/0` set `ip nat outside`, `Gi0/0/1` set `ip nat inside`; `SANDLOCK-NAT` standard ACL permits `10.255.255.2`, with overload to the `Gi0/0/0` DHCP interface.
+- OPNsense diagnostic ping from `10.255.255.2` to `1.1.1.1`: **3 sent / 3 received**. Cisco translation table proved ICMP source NAT `10.255.255.2` → `192.168.1.244`, 1 active entry at test time; subsequent NAT statistics showed 139 hits, 27 misses and 0 active translations after entries expired. This confirms **ICMP path only**, not DNS/TCP or downstream clients.
+- **Cisco NAT save to startup-config not confirmed** after November 16 changes. Earlier November 15 save remains verified; check/save current running config at next session.
+- OPNsense VLAN devices confirmed **all nine VLANs on `igb2`**: tag 99 MANAGEMENT, 10 SERVERS, 20 WORKSTATIONS, 30 STORAGE, 40 WIFI-USERS, 50 SECURITY, 60 IOT, 70 LAB, 80 ACCESSPOINTS. `igb2` trunk link up; `igb1` WAN up; `igb0` LAN link down.
+- `igb0` LAN remains `192.168.1.1/24`, conflicting with household router network `192.168.1.0/24`. Proposed separate `192.168.2.1/24` is **not applied**. VLAN 99 `192.168.99.1/24` must remain reachable during migration.
+- Kea DHCPv4 service enabled; defined subnets: `192.168.20.0/24` WORKSTATIONS, `192.168.40.0/24` WIFI-USERS, `192.168.60.0/24` IOT, `192.168.70.0/24` LAB, `192.168.99.0/24` MANAGEMENT. No Kea `192.168.1.0/24` subnet observed.
+- Dnsmasq enabled, interface selection includes LAN; LAN IPv4 DHCP range **`192.168.1.100–192.168.1.199`**, and LAN IPv6/RA range **`::1000–::2000`** with LAN constructor and SLAAC RA. Dnsmasq DNS listen port shown as `53053`. Review other DNS/DHCP dependencies before changing LAN; do not disable Dnsmasq globally.
+
+**Actual stop:** On `Interfaces → Overview`, confirmed `igb0` has link down. **OPNsense configuration backup has not been downloaded/confirmed; no LAN readdress or DHCP change performed.** Equipment shutdown or cable disconnection was **not** requested/verified for this pause. Lenovo Ubuntu missing `sudo`; root password/recovery deferred; separate host maintenance item, not a network blocker.
+
+**Resume in this order:** (1) Obtain secure offline OPNsense config backup at `System → Configuration → Backups`, never commit it; (2) check backups and LAN dependency/IPv6/RA settings; (3) plan and carefully migrate Dnsmasq LAN ranges and `igb0` to a non-overlapping subnet while retaining VLAN 99 access; (4) verify Cisco NAT startup persistence and design safe stateful return filtering rather than blanket WAN permit; (5) test DNS, TCP/UDP, client VLAN egress, inter-VLAN and household isolation; (6) capture validation evidence and save configs.
