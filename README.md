@@ -21,8 +21,7 @@ Secure, segmented Proxmox homelab and defensive security monitoring platform.
 
 ## Status
 
-**November 19, 2026 — Cisco ZBF live activation:** On the ISR C1111-4P, configured inside/outside security-zone membership, enabled stateful DNS/HTTP/HTTPS inspection, and detached the conflicting ingress ACL from the WAN interface. OPNsense external/local DNS, hostname lookup, TCP 443 and IPv4 HTTPS fetch all passed. Cisco inspection counters showed 145 sessions created; NAT showed 18 active translations. The rollback reload was canceled. **Post-cutover startup-config save succeeded (`[OK]`); reboot persistence remains untested.** Downstream VLAN, household-network isolation, IPv6 behavior and router management reachability still require testing. [See verified ZBF change record](docs/network/cisco-zbf-activation-2026-11-19.md).
-
+**November 19, 2026 — Cisco ZBF live activation:** On the ISR C1111-4P, configured inside/outside security-zone membership, enabled stateful DNS/HTTP/HTTPS inspection, and detached the conflicting ingress ACL from the WAN interface. OPNsense external/local DNS, hostname lookup, TCP 443 and IPv4 HTTPS fetch all passed. Cisco inspection counters showed 145 sessions created; NAT showed 18 active translations. The rollback reload was canceled. **Post-cutover startup-config save succeeded (`[OK]`), and zone assignments were read back from startup-config; reboot persistence remains untested.** Downstream VLAN, household-network isolation, IPv6 behavior and router management reachability still require testing. [See verified ZBF change record](docs/network/cisco-zbf-activation-2026-11-19.md).
 
 VLAN/firewall baseline validated during September; Seneca software and Suricata baseline established; PineTapPi rolling capture functional October 4; Command Pi pre-staged October 7. Final rack integration, complete management migration, Proxmox integration and end-to-end retesting remain.
 
