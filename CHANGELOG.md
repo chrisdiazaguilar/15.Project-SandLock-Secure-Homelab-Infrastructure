@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-19 — OPNsense network audit and verified pre-migration backup
+- Verified all nine OPNsense VLANs (10–80, 99) active with parent `igb2`; WAN `igb1` default route via `10.255.255.1`. Dell VLAN 99 `eno2.99` connectivity to `192.168.99.1` passed.
+- Confirmed PF enabled, Unbound listening on 53, and Dnsmasq running on UDP 67 and TCP/UDP 53053 with configured DHCP ranges for nine VLANs and legacy LAN.
+- Copied current `/conf/config.xml` to separate local pre-LAN-migration backup; verified equal SHA-256 checksums on OPNsense and after transfer to Dell. Preserved earlier pre-ZBF backup. No sensitive exports committed.
+- Audited `INTERNAL_VLANS` and found MANAGEMENT VLAN 99 broad allow policies; household access is **not yet proven blocked**. Legacy `igb0` `192.168.1.1/24` remains disconnected and overlaps upstream subnet.
+- OPNsense RJ45 serial console not working with attempted USB-to-RJ45 cable; direct recovery method unverified. No firewall, DHCP, routing or interface changes applied. Household isolation paused at MANAGEMENT rule review. Ryzen Proxmox, i7 PBS and R320 NAS all require hardware work.
+- Active next steps are consolidated in [current roadmap checkpoint](docs/roadmap/next-steps.md); prior Cisco ZBF change record left intact.
+
 ## 2026-11-19 — Cisco ZBF activation and persistence verification
 - Assigned Gi0/0/1 to SL-INSIDE and Gi0/0/0 to SL-OUTSIDE; detached the restrictive SANDLOCK-WAN-IN interface ACL. SL-ZBF-OUTBOUND inspects DNS, HTTP, HTTPS and drops unmatched interzone traffic; SSH VTY ACL retained.
 - OPNsense direct/local DNS, system hostname lookup, TCP 443 and IPv4 HTTPS fetch (577 bytes) succeeded. Earlier non-forced hostname fetch failed; IPv6/address selection investigation remains open.
