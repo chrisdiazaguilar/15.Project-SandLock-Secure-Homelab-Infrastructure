@@ -1,5 +1,19 @@
 # Next steps
 
+## Current state — November 19, 2026, after ZBF cutover
+
+Cisco ZBF is **active in the running configuration** and public DNS, localhost Unbound, TCP 443, and IPv4 HTTPS succeeded from OPNsense. A scheduled emergency reload was canceled. **Post-cutover startup-config save is not yet evidenced**; downstream client egress and isolation remain unvalidated. See [activation record](../network/cisco-zbf-activation-2026-11-19.md).
+
+1. Verify management reachability and unsolicited-inbound blocking before persisting firewall changes; capture startup save confirmation when completed.
+2. Test IPv6 DNS/HTTPS/address selection and add only required protocols beyond DNS/HTTP/HTTPS.
+3. Validate OPNsense-to-household network isolation and client VLAN egress/inter-VLAN rules.
+4. Securely back up OPNsense configuration off-device; do not upload secrets or raw configs to public GitHub.
+5. Resolve overlapping OPNsense LAN subnet and Dnsmasq DHCP/RA dependencies in a separate managed change.
+6. Review IOS XE support/update path, monitoring, recovery drills, and longer-term stability.
+
+### Historical checkpoints below (superseded by active ZBF status)
+
+
 ## Current pause point — November 19, 2026
 
 **Confirmed:** Cisco NAT/routing active, but inbound WAN ACL `SANDLOCK-WAN-IN` is denying DNS/HTTPS response traffic, so OPNsense DNS and firmware access remain broken. `securityk9` reported IN USE and Cisco ZBF inspection CLI is available. No zones or policy applied. On-device Cisco **running-config** backup verified at `flash:SL-RTR-01-pre-ZBF.cfg` (7,350 bytes); this is not an off-device backup or a confirmed post-NAT startup save.
