@@ -4,7 +4,7 @@
 
 **Verified live:** Cisco ISR ZBF zones and outbound DNS/HTTP/HTTPS inspection are active; conflicting ingress ACL detached from Gi0/0/0. OPNsense public/local DNS and IPv4 HTTPS work. 145 Cisco inspection sessions and 18 NAT translations observed; reload safeguard canceled.
 
-1. **Post-cutover Cisco startup-config save confirmed `[OK]`.** Read back saved ZBF zone membership and verify reboot persistence later, after recovery readiness is confirmed.
+1. **Post-cutover Cisco startup-config save confirmed `[OK]`.** Startup-config zone membership verified for SL-OUTSIDE and SL-INSIDE; verify reboot persistence later, after recovery readiness is confirmed.
 2. Validate authorized management via VLAN 250 and absence of accidental WAN management exposure; check Cisco self-zone behavior and unsolicited inbound traffic.
 3. Verify SandLock cannot reach household LAN except explicitly approved traffic, and test OPNsense VLAN isolation and downstream client egress.
 4. Review NTP, ICMP, firmware and other needed protocols; investigate IPv6/hostname fetch discrepancies.
@@ -13,19 +13,9 @@
 [Verified change record](../network/cisco-zbf-activation-2026-11-19.md). Earlier checkpoints below remain historical.
 
 
-## Current state — November 19, 2026, after ZBF cutover
+### Historical checkpoints (below)
 
-Cisco ZBF is **active in the running configuration** and public DNS, localhost Unbound, TCP 443, and IPv4 HTTPS succeeded from OPNsense. A scheduled emergency reload was canceled. **Post-cutover startup-config save is not yet evidenced**; downstream client egress and isolation remain unvalidated. See [activation record](../network/cisco-zbf-activation-2026-11-19.md).
-
-1. Verify management reachability and unsolicited-inbound blocking before persisting firewall changes; capture startup save confirmation when completed.
-2. Test IPv6 DNS/HTTPS/address selection and add only required protocols beyond DNS/HTTP/HTTPS.
-3. Validate OPNsense-to-household network isolation and client VLAN egress/inter-VLAN rules.
-4. Securely back up OPNsense configuration off-device; do not upload secrets or raw configs to public GitHub.
-5. Resolve overlapping OPNsense LAN subnet and Dnsmasq DHCP/RA dependencies in a separate managed change.
-6. Review IOS XE support/update path, monitoring, recovery drills, and longer-term stability.
-
-### Historical checkpoints below (superseded by active ZBF status)
-
+The following checkpoints describe prior states, not the current live ZBF configuration.
 
 ## Current pause point — November 19, 2026
 
