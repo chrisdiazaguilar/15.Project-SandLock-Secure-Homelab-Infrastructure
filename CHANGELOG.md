@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-19 — Cisco ZBF activated; IPv4 DNS/HTTPS verified
+- Replaced the restrictive stateless WAN *interface* ACL with Cisco ZBF zone membership: ISP-facing Gi0/0/0 in SL-OUTSIDE, OPNsense-facing Gi0/0/1 in SL-INSIDE.
+- Outbound SL-ZBF-OUTBOUND inspects DNS, HTTP and HTTPS and drops unmatched interzone traffic. VTY SSH restrictions remain present.
+- OPNsense verified public DNS, local Unbound DNS, system name lookup, TCP 443 and IPv4 HTTPS fetch (577 bytes). Non-forced HTTPS fetch failed previously; IPv6/address selection not conclusively diagnosed.
+- Cisco verified 145 inspection session creations, 25 unmatched packet drops, 18 active NAT translations at sample time. Reload safeguard successfully canceled.
+- **Pending:** proof of post-cutover startup-config save, management accessibility, unsolicited inbound and household/VLAN isolation tests, supported update strategy. Do not mark production validation complete.
+- Details: [ZBF activation record](docs/network/cisco-zbf-activation-2026-11-19.md).
+
+
 ## 2026-11-19 — Live Cisco ZBF cutover, restored IPv4 DNS/HTTPS
 - Assigned Cisco `Gi0/0/1` to `SL-INSIDE`, `Gi0/0/0` to `SL-OUTSIDE`, and removed the incompatible `SANDLOCK-WAN-IN` interface attachment. Stateful `SL-ZBF-OUTBOUND` with DNS/HTTP/HTTPS inspection and default drop is operating.
 - OPNsense confirmed direct and Unbound DNS, system name lookup, TCP 443 connection and IPv4 HTTPS fetch. Unforced HTTPS hostname fetch had failed; IPv6 investigation remains open.
