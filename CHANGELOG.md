@@ -5,7 +5,8 @@
 - Outbound SL-ZBF-OUTBOUND inspects DNS, HTTP and HTTPS and drops unmatched interzone traffic. VTY SSH restrictions remain present.
 - OPNsense verified public DNS, local Unbound DNS, system name lookup, TCP 443 and IPv4 HTTPS fetch (577 bytes). Non-forced HTTPS fetch failed previously; IPv6/address selection not conclusively diagnosed.
 - Cisco verified 145 inspection session creations, 25 unmatched packet drops, 18 active NAT translations at sample time. Reload safeguard successfully canceled.
-- **Pending:** proof of post-cutover startup-config save, management accessibility, unsolicited inbound and household/VLAN isolation tests, supported update strategy. Do not mark production validation complete.
+- Cisco `copy running-config startup-config` succeeded with `[OK]` after ZBF activation; reboot persistence remains untested.
+- **Pending:** saved config inspection, management accessibility, unsolicited inbound and household/VLAN isolation tests, supported update strategy. Do not mark production validation complete.
 - Details: [ZBF activation record](docs/network/cisco-zbf-activation-2026-11-19.md).
 
 
