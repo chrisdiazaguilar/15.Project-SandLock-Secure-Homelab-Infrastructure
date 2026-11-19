@@ -1,5 +1,18 @@
 # Next steps
 
+## Current checkpoint — November 19, 2026 (after ZBF activation)
+
+**Verified live:** Cisco ISR ZBF zones and outbound DNS/HTTP/HTTPS inspection are active; conflicting ingress ACL detached from Gi0/0/0. OPNsense public/local DNS and IPv4 HTTPS work. 145 Cisco inspection sessions and 18 NAT translations observed; reload safeguard canceled.
+
+1. Verify **post-cutover Cisco startup-config save** (not yet evidenced), then planned reboot persistence after recovery readiness is confirmed.
+2. Validate authorized management via VLAN 250 and absence of accidental WAN management exposure; check Cisco self-zone behavior and unsolicited inbound traffic.
+3. Verify SandLock cannot reach household LAN except explicitly approved traffic, and test OPNsense VLAN isolation and downstream client egress.
+4. Review NTP, ICMP, firmware and other needed protocols; investigate IPv6/hostname fetch discrepancies.
+5. Resolve OPNsense LAN subnet overlap and Dnsmasq DHCP/RA dependency with a separate rollback plan; complete backup/restore testing, monitoring and software-upgrade strategy.
+
+[Verified change record](../network/cisco-zbf-activation-2026-11-19.md). Earlier checkpoints below remain historical.
+
+
 ## Current state — November 19, 2026, after ZBF cutover
 
 Cisco ZBF is **active in the running configuration** and public DNS, localhost Unbound, TCP 443, and IPv4 HTTPS succeeded from OPNsense. A scheduled emergency reload was canceled. **Post-cutover startup-config save is not yet evidenced**; downstream client egress and isolation remain unvalidated. See [activation record](../network/cisco-zbf-activation-2026-11-19.md).
