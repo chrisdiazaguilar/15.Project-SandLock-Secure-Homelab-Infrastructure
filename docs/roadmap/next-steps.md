@@ -4,7 +4,7 @@
 
 **Verified live:** Cisco ISR ZBF zones and outbound DNS/HTTP/HTTPS inspection are active; conflicting ingress ACL detached from Gi0/0/0. OPNsense public/local DNS and IPv4 HTTPS work. 145 Cisco inspection sessions and 18 NAT translations observed; reload safeguard canceled.
 
-1. Verify **post-cutover Cisco startup-config save** (not yet evidenced), then planned reboot persistence after recovery readiness is confirmed.
+1. **Post-cutover Cisco startup-config save confirmed `[OK]`.** Read back saved ZBF zone membership and verify reboot persistence later, after recovery readiness is confirmed.
 2. Validate authorized management via VLAN 250 and absence of accidental WAN management exposure; check Cisco self-zone behavior and unsolicited inbound traffic.
 3. Verify SandLock cannot reach household LAN except explicitly approved traffic, and test OPNsense VLAN isolation and downstream client egress.
 4. Review NTP, ICMP, firmware and other needed protocols; investigate IPv6/hostname fetch discrepancies.
