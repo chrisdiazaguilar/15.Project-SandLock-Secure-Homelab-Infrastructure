@@ -1,22 +1,11 @@
 # Changelog
 
-## 2026-11-19 — Cisco ZBF activated; IPv4 DNS/HTTPS verified
-- Replaced the restrictive stateless WAN *interface* ACL with Cisco ZBF zone membership: ISP-facing Gi0/0/0 in SL-OUTSIDE, OPNsense-facing Gi0/0/1 in SL-INSIDE.
-- Outbound SL-ZBF-OUTBOUND inspects DNS, HTTP and HTTPS and drops unmatched interzone traffic. VTY SSH restrictions remain present.
-- OPNsense verified public DNS, local Unbound DNS, system name lookup, TCP 443 and IPv4 HTTPS fetch (577 bytes). Non-forced HTTPS fetch failed previously; IPv6/address selection not conclusively diagnosed.
-- Cisco verified 145 inspection session creations, 25 unmatched packet drops, 18 active NAT translations at sample time. Reload safeguard successfully canceled.
-- Cisco `copy running-config startup-config` succeeded with `[OK]` after ZBF activation; reboot persistence remains untested.
-- **Pending:** saved config inspection, management accessibility, unsolicited inbound and household/VLAN isolation tests, supported update strategy. Do not mark production validation complete.
-- Details: [ZBF activation record](docs/network/cisco-zbf-activation-2026-11-19.md).
-
-
-## 2026-11-19 — Live Cisco ZBF cutover, restored IPv4 DNS/HTTPS
-- Assigned Cisco `Gi0/0/1` to `SL-INSIDE`, `Gi0/0/0` to `SL-OUTSIDE`, and removed the incompatible `SANDLOCK-WAN-IN` interface attachment. Stateful `SL-ZBF-OUTBOUND` with DNS/HTTP/HTTPS inspection and default drop is operating.
-- OPNsense confirmed direct and Unbound DNS, system name lookup, TCP 443 connection and IPv4 HTTPS fetch. Unforced HTTPS hostname fetch had failed; IPv6 investigation remains open.
-- Cisco counters captured 145 inspection sessions, 284 DNS packets, 36 TCP packets, 25 class-default dropped packets; 18 active NAT translations at test time.
-- Temporary reload protection was scheduled and canceled; `show reload` showed no scheduled reload. Lenovo `tmux`/USB console access was validated.
-- **Post-cutover startup-config save NOT confirmed** by screenshots; no validated unwanted-inbound or VLAN/household isolation results yet. See [activation record](docs/network/cisco-zbf-activation-2026-11-19.md). Sensitive configuration exports are not published.
-
+## 2026-11-19 — Cisco ZBF activation and persistence verification
+- Assigned Gi0/0/1 to SL-INSIDE and Gi0/0/0 to SL-OUTSIDE; detached the restrictive SANDLOCK-WAN-IN interface ACL. SL-ZBF-OUTBOUND inspects DNS, HTTP, HTTPS and drops unmatched interzone traffic; SSH VTY ACL retained.
+- OPNsense direct/local DNS, system hostname lookup, TCP 443 and IPv4 HTTPS fetch (577 bytes) succeeded. Earlier non-forced hostname fetch failed; IPv6/address selection investigation remains open.
+- Cisco inspection reported 145 created sessions, 284 DNS packets, 36 TCP packets, 25 default drops; NAT reported 18 active translations at observation time.
+- Timed reload was canceled; no reload scheduled. Cisco running-to-startup save returned [OK]. Subsequent readback showed both SL-OUTSIDE and SL-INSIDE zone-member assignments in startup-config.
+- Still untested: post-reboot persistence, inbound blocking, management reachability, household/VLAN isolation and broader protocol coverage. See [single detailed change record](docs/network/cisco-zbf-activation-2026-11-19.md).
 
 ## 2026-11-19 — Cisco WAN ACL return-traffic diagnosis and pre-ZBF flash checkpoint
 - On OPNsense, confirmed Unbound running on port 53 and Dnsmasq on 53053; local DNS returned SERVFAIL. Direct external UDP/TCP DNS failed; HTTPS TCP connection timed out, while prior ICMP ping succeeded.
