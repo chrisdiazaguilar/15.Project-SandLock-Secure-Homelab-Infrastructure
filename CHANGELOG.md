@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-19 — Live Cisco ZBF cutover, restored IPv4 DNS/HTTPS
+- Assigned Cisco `Gi0/0/1` to `SL-INSIDE`, `Gi0/0/0` to `SL-OUTSIDE`, and removed the incompatible `SANDLOCK-WAN-IN` interface attachment. Stateful `SL-ZBF-OUTBOUND` with DNS/HTTP/HTTPS inspection and default drop is operating.
+- OPNsense confirmed direct and Unbound DNS, system name lookup, TCP 443 connection and IPv4 HTTPS fetch. Unforced HTTPS hostname fetch had failed; IPv6 investigation remains open.
+- Cisco counters captured 145 inspection sessions, 284 DNS packets, 36 TCP packets, 25 class-default dropped packets; 18 active NAT translations at test time.
+- Temporary reload protection was scheduled and canceled; `show reload` showed no scheduled reload. Lenovo `tmux`/USB console access was validated.
+- **Post-cutover startup-config save NOT confirmed** by screenshots; no validated unwanted-inbound or VLAN/household isolation results yet. See [activation record](docs/network/cisco-zbf-activation-2026-11-19.md). Sensitive configuration exports are not published.
+
+
 ## 2026-11-19 — Cisco WAN ACL return-traffic diagnosis and pre-ZBF flash checkpoint
 - On OPNsense, confirmed Unbound running on port 53 and Dnsmasq on 53053; local DNS returned SERVFAIL. Direct external UDP/TCP DNS failed; HTTPS TCP connection timed out, while prior ICMP ping succeeded.
 - Captured outbound OPNsense WAN SYN packets without observed return SYN-ACK. Cisco WAN ACL `SANDLOCK-WAN-IN` explicitly logged denied HTTPS and DNS return packets; NAT translations and correct default routes independently verified.
