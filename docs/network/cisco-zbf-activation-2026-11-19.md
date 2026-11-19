@@ -23,7 +23,7 @@ A classic ACL matches packets independently. ZBF `inspect` maintains state for p
 
 ## Persistence status
 
-**Confirmed after activation:** `copy running-config startup-config` returned `Building configuration... [OK]` on November 19, 2026. A post-save startup-config comparison and controlled reboot verification are still pending; do not claim reboot-tested persistence. Existing on-device pre-ZBF flash copy and an OPNsense configuration backup have separate evidence and should not be confused with GitHub backups.
+**Confirmed after activation:** `copy running-config startup-config` returned `Building configuration... [OK]` on November 19, 2026. A subsequent `show startup-config | include zone-member security` readback confirmed both `SL-OUTSIDE` and `SL-INSIDE` entries, and `show reload` confirmed no scheduled reboot. Controlled reboot verification remains pending; do not claim reboot-tested persistence. Existing on-device pre-ZBF flash copy and an OPNsense configuration backup have separate evidence and should not be confused with GitHub backups.
 
 ## Remaining work before calling private homelab network production-ready
 
@@ -32,7 +32,7 @@ A classic ACL matches packets independently. ZBF `inspect` maintains state for p
 3. Review needed protocols beyond DNS/HTTP/HTTPS (NTP, ICMP diagnostics, firmware, VPN/control traffic), and explicitly permit only what is required.
 4. Verify downstream VLAN client egress, OPNsense firewall/VLAN isolation and SandLock-to-household-network isolation. Resolve overlapping LAN subnet and DHCP/RA dependencies separately.
 5. Verify software-update strategy for the unsupported IOS XE release; test fail-safe recovery, backup restore and monitoring.
-6. Verify saved startup-config includes both zone assignments and document a controlled reboot test (if/when appropriate). **Never publish raw running configs, secrets, or device backups to this public repository.**
+6. Startup-config zone membership was verified; document a controlled reboot test (if/when appropriate). **Never publish raw running configs, secrets, or device backups to this public repository.**
 
 ## Safe operations note
 
