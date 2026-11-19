@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-19 — Cisco WAN ACL return-traffic diagnosis and pre-ZBF flash checkpoint
+- On OPNsense, confirmed Unbound running on port 53 and Dnsmasq on 53053; local DNS returned SERVFAIL. Direct external UDP/TCP DNS failed; HTTPS TCP connection timed out, while prior ICMP ping succeeded.
+- Captured outbound OPNsense WAN SYN packets without observed return SYN-ACK. Cisco WAN ACL `SANDLOCK-WAN-IN` explicitly logged denied HTTPS and DNS return packets; NAT translations and correct default routes independently verified.
+- Verified ISR C1111-4P IOS XE 17.06.06a, securityk9/appxk9 reported IN USE, and ZBF inspection CLI help available. No ZBF policies or zone assignments applied.
+- Verified VTY SSH access limited by `ROUTER-SSH-MGMT` to dedicated management subnet.
+- Backed up Cisco **running config** to `flash:SL-RTR-01-pre-ZBF.cfg` (7,350 bytes), verified with flash directory listing. Not a confirmed startup-config save or offline restore-ready backup.
+- **No live firewall policy changes made.** Next: offline OPNsense backup and safe ZBF cutover/rollback plan, then DNS/HTTPS and isolation validation. No credential hashes or raw device exports committed.
+
+
 ## 2026-11-16 — Cisco/OPNsense NAT verification and LAN dependency audit
 - Reconnected Cisco upstream and verified DHCP `192.168.1.244`, gateway `192.168.1.1`, transit `10.255.255.1/30`, and persisted restrictive WAN ACL.
 - Confirmed OPNsense Automatic Source NAT; configured Cisco inside/outside NAT and overload only for `10.255.255.2`. Verified firewall-originated ICMP ping to `1.1.1.1` (3/3) and Cisco ICMP NAT translation; DNS/TCP/client internet remains unverified.
