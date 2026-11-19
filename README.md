@@ -21,7 +21,8 @@ Secure, segmented Proxmox homelab and defensive security monitoring platform.
 
 ## Status
 
-**November 19, 2026 — Cisco ZBF cutover:** Stateful zone inspection is active on Cisco ISR C1111-4P and the conflicting inbound WAN interface ACL is detached. OPNsense tests passed for public/local DNS, TCP 443 and IPv4 HTTPS. Cisco observed 145 inspection sessions and 18 active NAT translations; the 30-minute recovery reload was canceled. **Pending:** verify post-cutover startup-config save, dedicated management SSH, unsolicited inbound rejection, downstream VLAN/household isolation, IPv6 behavior and IOS XE patch strategy. See [ZBF activation checkpoint](docs/network/cisco-zbf-activation-2026-11-19.md).
+**November 19, 2026 — Cisco ZBF live activation:** On the ISR C1111-4P, configured inside/outside security-zone membership, enabled stateful DNS/HTTP/HTTPS inspection, and detached the conflicting ingress ACL from the WAN interface. OPNsense external/local DNS, hostname lookup, TCP 443 and IPv4 HTTPS fetch all passed. Cisco inspection counters showed 145 sessions created; NAT showed 18 active translations. The rollback reload was canceled. **Post-cutover startup-config save and reboot persistence are not yet confirmed.** Downstream VLAN, household-network isolation, IPv6 behavior and router management reachability still require testing. [See verified ZBF change record](docs/network/cisco-zbf-activation-2026-11-19.md).
+
 
 VLAN/firewall baseline validated during September; Seneca software and Suricata baseline established; PineTapPi rolling capture functional October 4; Command Pi pre-staged October 7. Final rack integration, complete management migration, Proxmox integration and end-to-end retesting remain.
 
