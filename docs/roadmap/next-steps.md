@@ -1,17 +1,25 @@
 # Next steps
 
-## Current checkpoint — November 19, 2026 (after ZBF activation)
+## Current checkpoint — November 19, 2026 (OPNsense audit; household isolation not applied)
 
-**Verified live:** Cisco ISR ZBF zones and outbound DNS/HTTP/HTTPS inspection are active; conflicting ingress ACL detached from Gi0/0/0. OPNsense public/local DNS and IPv4 HTTPS work. 145 Cisco inspection sessions and 18 NAT translations observed; reload safeguard canceled.
+**Verified:** Cisco ISR ZBF/NAT and OPNsense IPv4 DNS/HTTPS tests succeeded earlier; Cisco startup save and zone readback confirmed (reboot persistence not tested). OPNsense default route uses `10.255.255.1` via WAN `igb1`; trunk `igb2` is active at 1 Gbps. Nine VLAN interfaces (IDs 10–80, 99) are active and parented to `igb2`. Dell management `eno2.99` (`192.168.99.10/24`) reaches OPNsense `192.168.99.1` by tagged VLAN 99, independently of Dell Wi-Fi. PF enabled; Unbound listening on port 53 and Dnsmasq on UDP 67 and TCP/UDP 53053. Dnsmasq active config: `/usr/local/etc/dnsmasq.conf`, with ranges for nine VLANs and old LAN.
 
-1. **Post-cutover Cisco startup-config save confirmed `[OK]`.** Startup-config zone membership verified for SL-OUTSIDE and SL-INSIDE; verify reboot persistence later, after recovery readiness is confirmed.
-2. Validate authorized management via VLAN 250 and absence of accidental WAN management exposure; check Cisco self-zone behavior and unsolicited inbound traffic.
-3. Verify SandLock cannot reach household LAN except explicitly approved traffic, and test OPNsense VLAN isolation and downstream client egress.
-4. Review NTP, ICMP, firmware and other needed protocols; investigate IPv6/hostname fetch discrepancies.
-5. Resolve OPNsense LAN subnet overlap and Dnsmasq DHCP/RA dependency with a separate rollback plan; complete backup/restore testing, monitoring and software-upgrade strategy.
+**Backups:** `/conf/config.xml` copied locally as `opnsense-pre-lan-migration-20261119.xml`; SHA-256 matched source and the independently transferred Dell copy. Earlier pre-ZBF backup preserved. Backup files and hashes are not published.
 
-[Verified change record](../network/cisco-zbf-activation-2026-11-19.md). Earlier checkpoints below remain historical.
+**Security finding:** `INTERNAL_VLANS` includes SandLock VLANs and `192.168.1.0/24`; standard VLAN block-before-allow rules exist, but MANAGEMENT VLAN 99 has broad pass-to-internal and pass-to-any policies. This does **not** demonstrate household isolation. Household Wi-Fi seen on Dell is `192.168.0.0/24`; Cisco ISP-facing network is `192.168.1.0/24`. Inspect actual management firewall rule ordering, exceptions, traffic paths and both household-side ranges before applying narrowly scoped blocks.
 
+**Outstanding risk:** Legacy OPNsense `igb0` is link-down but configured at `192.168.1.1/24`, overlapping the Cisco upstream subnet. A possible replacement `192.168.2.1/24` has **not** been confirmed unused across all networks; migration must account for Dnsmasq LAN DHCPv4 `192.168.1.100–199`, IPv6 `::1000–::2000`/RA and rollback. OPNsense serial RJ45 recovery remains unverified; previous USB-to-RJ45 attempt failed. Dell web/SSH management is working but is not an independent recovery console.
+
+### Next actions (current; no changes applied during audit)
+
+1. In OPNsense web UI, inspect MANAGEMENT (VLAN 99) firewall rule ordering and aliases; design explicit SandLock-to-household restrictions, preserving Dell management and documented approved exceptions. Test from actual VLAN clients before claiming isolation.
+2. Establish a tested out-of-band OPNsense recovery method or a proven safe rollback path before disruptive firewall, LAN, DHCP or routing changes.
+3. Verify proposed LAN subnet is unused and plan coordinated `igb0` readdressing plus Dnsmasq DHCP/IPv6 RA changes; do not renumber during an inspection session.
+4. Test downstream VLAN clients through the Catalyst/Seneca TAP, capture/monitoring and firewall isolation; verify Cisco management/self-zone and unsolicited inbound protections; investigate IPv6 and needed additional protocols.
+5. Proxmox (Ryzen), PBS (i7) and Dell R320 NAS **require hardware work** and are deferred to a separate phase; do not report them deployed.
+6. Continue updating this checkpoint and changelog only for newly verified milestones; keep sensitive configs and backups out of public GitHub.
+
+[Existing detailed Cisco ZBF change record](../network/cisco-zbf-activation-2026-11-19.md). Earlier checkpoints below remain historical.
 
 ### Historical checkpoints (below)
 
