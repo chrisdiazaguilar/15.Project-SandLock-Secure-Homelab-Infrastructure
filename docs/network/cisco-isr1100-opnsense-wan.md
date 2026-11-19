@@ -1,6 +1,6 @@
 # Cisco ISR 1100 upstream and OPNsense WAN integration
 
-> **Latest checkpoint (November 19, 2026):** The ZBF change described in the historical notes below **has now been activated live**. OPNsense local/public DNS, TCP 443 and IPv4 HTTPS have passed; Cisco ZBF sessions and NAT translations are observed. The previous ingress ACL is detached. The reload safeguard was canceled. **Post-cutover startup-config save not yet confirmed**, nor VLAN/household isolation tests. [Read the current ZBF activation record](cisco-zbf-activation-2026-11-19.md).
+> **Latest checkpoint (November 19, 2026):** The ZBF change described in the historical notes below **has now been activated live**. OPNsense local/public DNS, TCP 443 and IPv4 HTTPS have passed; Cisco ZBF sessions and NAT translations are observed. The previous ingress ACL is detached. The reload safeguard was canceled. **Post-cutover startup-config save confirmed `[OK]`; reboot persistence not tested**, nor VLAN/household isolation tests. [Read the current ZBF activation record](cisco-zbf-activation-2026-11-19.md).
 
 > Status updated through November 16, 2026. This is an in-progress lab configuration: **router and firewall ICMP egress verified, but downstream clients, DNS/TCP, and isolation not validated end to end.** Private IPs are documented for project reproducibility; this repository is public.
 
