@@ -2,7 +2,7 @@
 
 Secure, segmented Proxmox homelab and defensive security monitoring platform.
 
-> Documentation snapshot: October 19, 2026. Reconstructed from project discussions; verify against live systems. Do not publish passwords, private keys, packet captures, or raw device configuration exports.
+> Documentation updated through November 19, 2026. Reconstructed from project discussions; verify against live systems. Do not publish passwords, private keys, packet captures, or raw device configuration exports.
 
 ## Goals
 - VLAN segmentation and OPNsense firewall policies
@@ -21,10 +21,7 @@ Secure, segmented Proxmox homelab and defensive security monitoring platform.
 
 ## Status
 
-**November 19, 2026 update:** Cisco NAT and default routes verified, but the inbound Cisco WAN ACL is dropping DNS/HTTPS return traffic; OPNsense DNS resolution and firmware update access remain unresolved. IOS XE ZBF inspection commands are available, but no security zones or policies have been applied. The router's running configuration has been copied to verified flash backup `SL-RTR-01-pre-ZBF.cfg` (7,350 bytes); this does not establish off-device backup or startup-config persistence. [Diagnostics and next actions](docs/network/cisco-isr1100-opnsense-wan.md).
-
-
-**November 2026 WAN update:** Cisco ISR1100 has a verified DHCP upstream connection to the household router; OPNsense WAN is confirmed as `igb1`, with static transit address entered but not yet verified applied. See [integration checkpoint](docs/network/cisco-isr1100-opnsense-wan.md). Full NAT, gateway, firewall and end-to-end connectivity remain pending.
+**November 19, 2026 — Cisco ZBF cutover:** Stateful zone inspection is active on Cisco ISR C1111-4P and the conflicting inbound WAN interface ACL is detached. OPNsense tests passed for public/local DNS, TCP 443 and IPv4 HTTPS. Cisco observed 145 inspection sessions and 18 active NAT translations; the 30-minute recovery reload was canceled. **Pending:** verify post-cutover startup-config save, dedicated management SSH, unsolicited inbound rejection, downstream VLAN/household isolation, IPv6 behavior and IOS XE patch strategy. See [ZBF activation checkpoint](docs/network/cisco-zbf-activation-2026-11-19.md).
 
 VLAN/firewall baseline validated during September; Seneca software and Suricata baseline established; PineTapPi rolling capture functional October 4; Command Pi pre-staged October 7. Final rack integration, complete management migration, Proxmox integration and end-to-end retesting remain.
 
