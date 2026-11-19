@@ -78,3 +78,24 @@ Resume by confirming which WAN cable was unplugged, verifying physical links and
 **Actual stop:** On `Interfaces → Overview`, confirmed `igb0` has link down. **OPNsense configuration backup has not been downloaded/confirmed; no LAN readdress or DHCP change performed.** Equipment shutdown or cable disconnection was **not** requested/verified for this pause. Lenovo Ubuntu missing `sudo`; root password/recovery deferred; separate host maintenance item, not a network blocker.
 
 **Resume in this order:** (1) Obtain secure offline OPNsense config backup at `System → Configuration → Backups`, never commit it; (2) check backups and LAN dependency/IPv6/RA settings; (3) plan and carefully migrate Dnsmasq LAN ranges and `igb0` to a non-overlapping subnet while retaining VLAN 99 access; (4) verify Cisco NAT startup persistence and design safe stateful return filtering rather than blanket WAN permit; (5) test DNS, TCP/UDP, client VLAN egress, inter-VLAN and household isolation; (6) capture validation evidence and save configs.
+
+
+## November 19, 2026 — DNS/HTTPS failure traced to Cisco inbound WAN ACL; pre-ZBF backup verified
+
+**Checkpoint status: diagnostic cause identified; mitigation NOT implemented; end-to-end internet egress NOT complete.**
+
+- OPNsense Unbound is running (confirmed via `configctl unbound status`, PID observed). It listens on TCP/UDP 53; Dnsmasq listens on TCP/UDP 53053. `service unbound onestatus` misleadingly reported not running, so OPNsense's management command was used as the authoritative process check.
+- On OPNsense, `drill @127.0.0.1 example.com` returned `SERVFAIL`; direct `drill @1.1.1.1 example.com` and TCP DNS query also failed. Firmware repository check reported a mirror/repository fetch failure. This is an egress/return-traffic issue, not evidence that Unbound itself is stopped.
+- OPNsense's default route for 1.1.1.1 is via Cisco transit gateway `10.255.255.1` through WAN `igb1`. TCP connections from OPNsense to 1.1.1.1 ports 53 and 443 timed out; prior ICMP connectivity passed.
+- WAN capture on OPNsense `igb1` observed outbound TCP SYNs from `10.255.255.2` to `1.1.1.1:443`, but no SYN-ACK response in that capture.
+- Cisco `SL-RTR-01`: DHCP WAN on `Gi0/0/0`, transit `Gi0/0/1` up/up, default route to household gateway, and dynamic overload NAT active for OPNsense transit source. NAT translations appeared; they did **not** establish successful return reachability.
+- Cisco WAN interface has `ip access-group SANDLOCK-WAN-IN in`. The stateless ACL permits DHCP replies and select ICMP, then `deny ip any any log`. The Cisco explicitly logged denied inbound return packets from external HTTPS server `1.1.1.1:443` and DNS source port 53. This **confirms WAN ingress ACL drops legitimate return traffic**; other failure modes are not yet excluded.
+- Cisco IOS XE `17.06.06a`; `securityk9` and `appxk9` were reported `IN USE` (this is not confirmation of update entitlement/support). The CLI recognizes `zone security`, `policy-map type inspect`, and `class-map type inspect` syntax. No ZBF security policy or zone assignment has been created.
+- Router SSH management remains restricted to its dedicated management subnet by `ROUTER-SSH-MGMT` on VTY 0–15. Avoid modifying VTY or management interface while testing new security policy.
+- **Verified Cisco on-device backup:** `copy running-config flash:SL-RTR-01-pre-ZBF.cfg` completed; `dir flash:SL-RTR-01-pre-ZBF.cfg` verified the file exists, 7,350 bytes, November 19. This is a flash copy of **running configuration**, NOT proof of startup-config save, off-device backup, tested recovery, or secure OPNsense backup.
+- Proposed direction is inspected/stateful return traffic with default-deny unsolicited ingress, coordinating/removing the conflicting stateless inbound ACL at controlled cutover only after rollback, console-access and management continuity checks. **No ACL, NAT, zone, or DNS changes made at this checkpoint.**
+- Remaining risks: aging IOS XE patch/update eligibility; existing OPNsense LAN subnet overlap and DHCP dependencies; household LAN isolation, downstream clients and VLAN egress unvalidated.
+
+**Next safe sequence:** secure an offline OPNsense configuration export; confirm direct/console recovery access; stage/document a supported ZBF inside-to-outside inspection policy and zone-pair with explicit default-deny reverse path; plan existing `SANDLOCK-WAN-IN` coexistence/cutover and an automatic rollback method; apply one controlled change at a time; verify TCP 443, UDP/TCP DNS, firmware reachability, blocked unsolicited inbound, household isolation, and all VLAN policies; persist config only after successful validation.
+
+**Repository safety:** Do not commit the raw flash backup, full running-config, credentials/hashes, private keys, logs exposing sensitive identities, or complete screenshots of secrets.
