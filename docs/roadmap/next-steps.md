@@ -1,5 +1,18 @@
 # Next steps
 
+## Current pause point — November 19, 2026
+
+**Confirmed:** Cisco NAT/routing active, but inbound WAN ACL `SANDLOCK-WAN-IN` is denying DNS/HTTPS response traffic, so OPNsense DNS and firmware access remain broken. `securityk9` reported IN USE and Cisco ZBF inspection CLI is available. No zones or policy applied. On-device Cisco **running-config** backup verified at `flash:SL-RTR-01-pre-ZBF.cfg` (7,350 bytes); this is not an off-device backup or a confirmed post-NAT startup save.
+
+1. Securely export OPNsense configuration offline and verify an out-of-band recovery route; keep sensitive backups outside public GitHub.
+2. Confirm Cisco local-console recovery, capture rollback procedure and set a timed fail-safe before any security-zone/interface changes.
+3. Design and stage supported ZBF stateful inspect policies for inside-initiated traffic, default-deny unsolicited inbound, and router self-zone management requirements. Coordinate migration from the current stateless WAN ACL; avoid broad `permit ip any any`.
+4. Test TCP 443, UDP/TCP 53, Unbound resolution, firmware check, unsolicited inbound blocking, OPNsense VLAN policy and household-network isolation before persisting a new configuration.
+5. Resolve existing OPNsense LAN `192.168.1.1/24` overlap separately, only after auditing Dnsmasq DHCP/RA and management access.
+
+See [November 19 diagnostics](../network/cisco-isr1100-opnsense-wan.md).
+
+
 ## Current pause point — November 16, 2026
 
 **Next action: Back up OPNsense configuration securely offline at System → Configuration → Backups.** The backup has **not** been confirmed. LAN `igb0` is link-down but still configured at `192.168.1.1/24`, overlapping household `192.168.1.0/24`. Preserve VLAN 99 management access and all nine VLANs on `igb2`.
